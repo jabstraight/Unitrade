@@ -1,10 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta http-equiv="refresh" content="0; url=./frontend/pages/index.html">
-  <title>Redirecting...</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTrade - Student Marketplace</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="./mainpageStyle.css" rel="stylesheet">
 </head>
 <body>
-  Redirecting to the main page...
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">UniTrade</a>
+            <nav class="nav-links">
+                <a href="categories.html" class="category-link">Categories</a>
+               
+                <a href="signin.html" class="category-link">Sign in</a>
+                <a href="account.html">Account</a>
+                <a href="create-listing.html" class="post-btn">Post Item</a>
+            </nav>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="product-grid">
+            <a href="/product-details" class="product-card-link">
+                <article class="product-card">
+                    <img src="../assets/images/placeholder.png" alt="Calculus Textbook" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Calculus: Early Transcendentals</h3>
+                        <p class="product-price">$45</p>
+                        <div class="product-meta">
+                            <span>Engineering</span>
+                            <span>2 days ago</span>
+                        </div>
+                    </div>
+                </article>
+            </a>
+
+            <article class="product-card">
+                <img src="../assets/images/placeholder.png" alt="Study Desk" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Adjustable Study Desk</h3>
+                    <p class="product-price">$75</p>
+                    <div class="product-meta">
+                        <span>Furniture</span>
+                        <span>1 day ago</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="product-card">
+                <img src="../assets/images/placeholder.png" alt="Scientific Calculator" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">TI-84 Plus Calculator</h3>
+                    <p class="product-price">$50</p>
+                    <div class="product-meta">
+                        <span>Electronics</span>
+                        <span>3 days ago</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="product-card">
+                <img src="../assets/images/placeholder.png" alt="Lab Coat" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Lab Coat (Size M)</h3>
+                    <p class="product-price">$20</p>
+                    <div class="product-meta">
+                        <span>Clothing</span>
+                        <span>4 hours ago</span>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </main>
+    <script src="C:\Users\seung\Desktop\prototype\config.js"></script>
+    <script src="C:\Users\seung\Desktop\prototype\auth.js"></script>
+    <script src="C:\Users\seung\Desktop\prototype\index.js"></script>
 </body>
 </html>
