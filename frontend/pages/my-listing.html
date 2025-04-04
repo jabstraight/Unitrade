@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Listings - UniMarket</title>
+  <link rel="stylesheet" href="../assets/css/uploadstyle.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Additional styles specific to the my listings page */
+    .page-title {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: var(--accent-color);
+    }
+
+    .listings-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .no-listings {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .no-listings-icon {
+      font-size: 3rem;
+      color: #ccc;
+      margin-bottom: 1rem;
+    }
+
+    .no-listings-text {
+      margin-bottom: 1.5rem;
+      color: #666;
+    }
+
+    .listings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .listing-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .listing-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .listing-image {
+      height: 200px;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .listing-details {
+      padding: 1rem;
+    }
+
+    .listing-title {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent-color);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 2.8rem;
+    }
+
+    .listing-price {
+      color: var(--primary-color);
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .listing-meta {
+      display: flex;
+      justify-content: space-between;
+      color: #666;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .listing-status {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+    }
+
+    .status-active {
+      background-color: #e8f5e9;
+      color: #388e3c;
+    }
+
+    .status-sold {
+      background-color: #eeeeee;
+      color: #616161;
+    }
+
+    .status-reserved {
+      background-color: #fff8e1;
+      color: #ffa000;
+    }
+
+    .listing-actions {
+      border-top: 1px solid #eee;
+      padding-top: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .listing-btn {
+      background: none;
+      border: none;
+      padding: 0.5rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      color: #666;
+      display: flex;
+      align-items: center;
+    }
+
+    .listing-btn:hover {
+      background-color: #f5f5f5;
+    }
+
+    .view-btn {
+      color: var(--primary-color);
+    }
+
+    .delete-btn {
+      color: #e53935;
+    }
+
+    .status-selector {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .status-filter {
+      margin: 0 0.5rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      background-color: #f0f2f5;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .status-filter.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .listings-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Loading spinner */
+    .loading-spinner {
+      text-align: center;
+      padding: 3rem;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 143, 171, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo">UniMarket</a>
+      
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="categories.html">Categories</a>
+        <div id="loggedInLinks">
+          <a href="create-listing.html" class="post-btn">Sell an Item</a>
+          <a href="my-listings.html">My Listings</a>
+          <a href="profile.html">Profile</a>
+          <a href="#" id="logoutBtn">Logout</a>
+        </div>
+        <div id="loggedOutLinks" style="display: none;">
+          <a href="login.html">Login</a>
+          <a href="register.html">Register</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1 class="page-title">My Listings</h1>
+    
+    <div id="alertContainer"></div>
+    
+    <!-- Status Filter -->
+    <div class="status-selector">
+      <button class="status-filter active" data-status="all">All</button>
+      <button class="status-filter" data-status="Active">Active</button>
+      <button class="status-filter" data-status="Reserved">Reserved</button>
+      <button class="status-filter" data-status="Sold">Sold</button>
+    </div>
+    
+    <!-- Loading Spinner -->
+    <div id="loadingIndicator" class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Loading your listings...</p>
+    </div>
+    
+    <!-- No Listings Message -->
+    <div id="noListings" class="no-listings" style="display: none;">
+      <div class="no-listings-icon">
+        <i class="fas fa-box-open"></i>
+      </div>
+      <h2>No Listings Found</h2>
+      <p class="no-listings-text">You haven't posted any items for sale yet.</p>
+      <a href="create-listing.html" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Post Your First Item
+      </a>
+    </div>
+    
+    <!-- Listings Grid -->
+    <div id="listingsContainer" class="listings-container" style="display: none;">
+      <div id="listingsGrid" class="listings-grid">
+        <!-- Listings will be populated here by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Change Modal -->
+  <div id="statusModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background-color: white; padding: 2rem; border-radius: 10px; width: 90%; max-width: 400px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="margin: 0;">Update Status</h3>
+        <button id="closeStatusModalBtn" style="background: none; border: none; font-size: 1.25rem; cursor: pointer;">×</button>
+      </div>
+      <p>Change the status of your listing:</p>
+      <div style="margin: 1.5rem 0;">
+        <select id="statusSelect" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px;">
+          <option value="Active">Active</option>
+          <option value="Reserved">Reserved</option>
+          <option value="Sold">Sold</option>
+        </select>
+      </div>
+      <button id="updateStatusBtn" class="btn btn-primary" style="width: 100%;">Update Status</button>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background-color: white; padding: 2rem; border-radius: 10px; width: 90%; max-width: 400px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="margin: 0;">Confirm Deletion</h3>
+        <button class="closeDeleteModalBtn" style="background: none; border: none; font-size: 1.25rem; cursor: pointer;">×</button>
+      </div>
+      <p>Are you sure you want to delete this listing? This action cannot be undone.</p>
+      <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+        <button class="closeDeleteModalBtn" style="flex: 1; padding: 0.75rem; border-radius: 25px; border: none; background-color: #f0f2f5; cursor: pointer;">Cancel</button>
+        <button id="confirmDeleteBtn" style="flex: 1; padding: 0.75rem; border-radius: 25px; border: none; background-color: #f44336; color: white; cursor: pointer;">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Require authentication for this page
+      if (!isAuthenticated()) {
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // Mobile menu toggle
+      document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+        const navLinks = document.getElementById('navLinks');
+        navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+      });
+      
+      // Get DOM elements
+      const loadingIndicator = document.getElementById('loadingIndicator');
+      const noListings = document.getElementById('noListings');
+      const listingsContainer = document.getElementById('listingsContainer');
+      const listingsGrid = document.getElementById('listingsGrid');
+      const statusFilters = document.querySelectorAll('.status-filter');
+      
+      // Variables for modals
+      let currentListingId = null;
+      let allListings = [];
+      let currentFilter = 'all';
+      
+      // Load listings
+      loadListings();
+      
+      // Setup status filters
+      statusFilters.forEach(filter => {
+        filter.addEventListener('click', function() {
+          // Update active filter
+          statusFilters.forEach(f => f.classList.remove('active'));
+          this.classList.add('active');
+          
+          // Apply filter
+          currentFilter = this.dataset.status;
+          filterListings(currentFilter);
+        });
+      });
+      
+      // Function to load listings
+      async function loadListings() {
+        try {
+          const token = localStorage.getItem('token');
+          
+          if (!token) {
+            showAlert('You must be logged in to view your listings', 'danger');
+            window.location.href = 'login.html';
+            return;
+          }
+          
+          // Show loading indicator
+          loadingIndicator.style.display = 'block';
+          noListings.style.display = 'none';
+          listingsContainer.style.display = 'none';
+          
+          // Fetch user listings from API
+          const response = await fetch(`${API_BASE_URL}/listings/user/listings`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          const data = await response.json();
+          
+          if (!response.ok) {
+            throw new Error(data.message || 'Failed to load listings');
+          }
+          
+          // Hide loading indicator
+          loadingIndicator.style.display = 'none';
+          
+          // Store all listings
+          allListings = data;
+          
+          // Display listings or no listings message
+          if (data.length === 0) {
+            noListings.style.display = 'block';
+          } else {
+            listingsContainer.style.display = 'block';
+            displayListings(data);
+          }
+          
+        } catch (error) {
+          console.error('Error:', error);
+          loadingIndicator.style.display = 'none';
+          showAlert('Error loading listings: ' + error.message, 'danger');
+        }
+      }
+      
+      // Function to display listings
+      function displayListings(listings) {
+        // Clear previous listings
+        listingsGrid.innerHTML = '';
+        
+        listings.forEach(listing => {
+          // Create listing card
+          const card = document.createElement('div');
+          card.className = 'listing-card';
+          
+          // Get image URL
+          const imageUrl = listing.images && listing.images.length > 0 
+            ? `http://localhost:5000${listing.images[0]}` 
+            : '../assets/images/placeholder.jpg';
+          
+          // Format date
+          const createdDate = new Date(listing.createdAt);
+          const formattedDate = createdDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+          });
+          
+          // Set status class
+          const statusClass = `status-${listing.status.toLowerCase()}`;
+          
+          // Create HTML for card
+          card.innerHTML = `
+            <img src="${imageUrl}" alt="${listing.title}" class="listing-image">
+            <div class="listing-details">
+              <span class="listing-status ${statusClass}">${listing.status}</span>
+              <h3 class="listing-title">${listing.title}</h3>
+              <div class="listing-price">$${listing.price.toFixed(2)}</div>
+              <div class="listing-meta">
+                <span><i class="fas fa-tag"></i> ${listing.condition}</span>
+                <span><i class="far fa-calendar-alt"></i> ${formattedDate}</span>
+              </div>
+              <div class="listing-actions">
+                <a href="listing-detail.html?id=${listing._id}" class="listing-btn view-btn">
+                  <i class="fas fa-eye"></i> View
+                </a>
+                <button class="listing-btn status-btn" data-id="${listing._id}" data-status="${listing.status}">
+                  <i class="fas fa-exchange-alt"></i> Status
+                </button>
+                <button class="listing-btn delete-btn" data-id="${listing._id}">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </div>
+            </div>
+          `;
+          
+          // Add card to grid
+          listingsGrid.appendChild(card);
+        });
+        
+        // Add event listeners to buttons
+        setupButtonListeners();
+      }
+      
+      // Function to filter listings
+      function filterListings(filter) {
+        if (filter === 'all') {
+          displayListings(allListings);
+        } else {
+          const filteredListings = allListings.filter(listing => listing.status === filter);
+          
+          if (filteredListings.length === 0) {
+            listingsGrid.innerHTML = `
+              <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                <p>No ${filter.toLowerCase()} listings found.</p>
+              </div>
+            `;
+          } else {
+            displayListings(filteredListings);
+          }
+        }
+      }
+      
+      // Function to setup button listeners
+      function setupButtonListeners() {
+        // Status change buttons
+        document.querySelectorAll('.status-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            // Store current listing ID
+            currentListingId = this.dataset.id;
+            
+            // Set current status in select
+            document.getElementById('statusSelect').value = this.dataset.status;
+            
+            // Show status modal
+            document.getElementById('statusModal').style.display = 'flex';
+          });
+        });
+        
+        // Delete buttons
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            // Store current listing ID
+            currentListingId = this.dataset.id;
+            
+            // Show delete modal
+            document.getElementById('deleteModal').style.display = 'flex';
+          });
+        });
+      }
+      
+      // Status modal setup
+      const statusModal = document.getElementById('statusModal');
+      const closeStatusModalBtn = document.getElementById('closeStatusModalBtn');
+      const updateStatusBtn = document.getElementById('updateStatusBtn');
+      
+      closeStatusModalBtn.addEventListener('click', function() {
+        statusModal.style.display = 'none';
+      });
+      
+      updateStatusBtn.addEventListener('click', async function() {
+        try {
+          const token = localStorage.getItem('token');
+          const status = document.getElementById('statusSelect').value;
+          
+          // Show loading state
+          this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+          this.disabled = true;
+          
+          // Update status via API
+          const response = await fetch(`${API_BASE_URL}/listings/${currentListingId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ status })
+          });
+          
+          const data = await response.json();
+          
+          if (!response.ok) {
+            throw new Error(data.message || 'Failed to update status');
+          }
+          
+          // Close modal
+          statusModal.style.display = 'none';
+          
+          // Show success message
+          showAlert('Listing status updated successfully', 'success');
+          
+          // Reload listings
+          loadListings();
+          
+        } catch (error) {
+          console.error('Error:', error);
+          showAlert('Error updating status: ' + error.message, 'danger');
+        } finally {
+          // Reset button
+          updateStatusBtn.innerHTML = 'Update Status';
+          updateStatusBtn.disabled = false;
+        }
+      });
+      
+      // Close modal when clicking outside
+      statusModal.addEventListener('click', function(e) {
+        if (e.target === statusModal) {
+          statusModal.style.display = 'none';
+        }
+      });
+      
+      // Delete modal setup
+      const deleteModal = document.getElementById('deleteModal');
+      const closeDeleteModalBtns = document.querySelectorAll('.closeDeleteModalBtn');
+      const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+      
+      closeDeleteModalBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          deleteModal.style.display = 'none';
+        });
+      });
+      
+      confirmDeleteBtn.addEventListener('click', async function() {
+        try {
+          const token = localStorage.getItem('token');
+          
+          // Show loading state
+          this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+          this.disabled = true;
+          
+          // Delete listing via API
+          const response = await fetch(`${API_BASE_URL}/listings/${currentListingId}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          const data = await response.json();
+          
+          if (!response.ok) {
+            throw new Error(data.message || 'Failed to delete listing');
+          }
+          
+          // Close modal
+          deleteModal.style.display = 'none';
+          
+          // Show success message
+          showAlert('Listing deleted successfully', 'success');
+          
+          // Reload listings
+          loadListings();
+          
+        } catch (error) {
+          console.error('Error:', error);
+          showAlert('Error deleting listing: ' + error.message, 'danger');
+        } finally {
+          // Reset button
+          confirmDeleteBtn.innerHTML = 'Delete';
+          confirmDeleteBtn.disabled = false;
+        }
+      });
+      
+      // Close modal when clicking outside
+      deleteModal.addEventListener('click', function(e) {
+        if (e.target === deleteModal) {
+          deleteModal.style.display = 'none';
+        }
+      });
+      
+      // Function to show alert messages
+      function showAlert(message, type) {
+        const alertContainer = document.getElementById('alertContainer');
+        
+        // Create alert element
+        const alertEl = document.createElement('div');
+        alertEl.className = `alert alert-${type}`;
+        alertEl.innerHTML = `
+          ${message}
+          <button type="button" class="close-btn" style="float: right; background: none; border: none; color: inherit; cursor: pointer;" onclick="this.parentElement.remove();">
+            &times;
+          </button>
+        `;
+        
+        // Add it to the page
+        alertContainer.appendChild(alertEl);
+        
+        // Auto dismiss after 5 seconds
+        setTimeout(() => {
+          if (alertEl.parentNode) {
+            alertEl.remove();
+          }
+        }, 5000);
+      }
+    });
+  </script>
+</body>
+</html>
